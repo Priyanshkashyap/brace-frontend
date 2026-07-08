@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/ManageGroupRoles.css";
 
 function ManageGroupRoles() {
 
     const { id } = useParams();
 
     const [roles, setRoles] = useState([]);
-
     const [selectedRole, setSelectedRole] = useState("");
-
     const [group, setGroup] = useState(null);
 
     useEffect(() => {
@@ -22,51 +21,41 @@ function ManageGroupRoles() {
         try {
 
             const roleResponse =
-                    await api.get("/roles");
+                await api.get("/roles");
 
             const groupResponse =
-                    await api.get(
-                            `/role-groups/${id}`
-                    );
+                await api.get(`/role-groups/${id}`);
 
-            setRoles(
-                    roleResponse.data
-            );
-
-            setGroup(
-                    groupResponse.data
-            );
+            setRoles(roleResponse.data);
+            setGroup(groupResponse.data);
 
         } catch (error) {
 
             console.error(error);
+            alert("Unable to load data.");
 
-            alert(
-                    "Unable to load data."
-            );
         }
+
     };
 
     const assignRole = async () => {
 
         if (!selectedRole) {
 
-            alert(
-                    "Select a role first."
-            );
-
+            alert("Select a role first.");
             return;
+
         }
 
         try {
 
             await api.put(
-                    `/role-groups/${id}/roles/${selectedRole}`
+                `/role-groups/${id}/roles/${selectedRole}`
             );
 
-            alert(
-                    "Role assigned successfully."
-            );
+            alert("Role assigned successfully.");
+
+            setSelectedRole("");
 
             loadData();
 
@@ -74,124 +63,165 @@ function ManageGroupRoles() {
 
             console.error(error);
 
-            alert(
-                    "Unable to assign role."
-            );
+            alert("Unable to assign role.");
+
         }
+
     };
 
     return (
 
-            <div
-                    style={{
-                        display: "flex"
-                    }}
-            >
+        <div className="mgr-page">
 
-                <Sidebar />
+            <Sidebar />
 
-                <div
-                        style={{
-                            flex: 1,
-                            padding: "25px"
-                        }}
-                >
+            <div className="mgr-content">
 
-                    <h1>
-                        Manage Group Roles
-                    </h1>
+                <div className="mgr-card">
 
-                    <hr />
+                    <div className="mgr-header">
+
+                        <div>
+
+                            <h1>
+                                Manage Group Roles
+                            </h1>
+
+                            <p>
+                                Assign roles to this role group.
+                            </p>
+
+                        </div>
+
+                        {
+
+                            group &&
+
+                            <div className="mgr-count">
+
+                                {group.roles.length}
+
+                                <span>Roles</span>
+
+                            </div>
+
+                        }
+
+                    </div>
 
                     {
-                        group && (
 
-                                <>
-                                    <h2>
-                                        Group:
-                                        {" "}
-                                        {group.name}
-                                    </h2>
+                        group &&
 
-                                    <h3>
-                                        Existing Roles
-                                    </h3>
+                        <>
+
+                            <div className="group-info">
+
+                                👥 {group.name}
+
+                            </div>
+
+                            <h3 className="section-title">
+
+                                Existing Roles
+
+                            </h3>
+
+                            <div className="role-list">
+
+                                {
+
+                                    group.roles?.length === 0 ?
+
+                                        <div className="empty-box">
+
+                                            No roles assigned yet.
+
+                                        </div>
+
+                                        :
+
+                                        group.roles.map(role => (
+
+                                            <div
+                                                key={role.id}
+                                                className="role-chip"
+                                            >
+
+                                                🛡 {role.name}
+
+                                            </div>
+
+                                        ))
+
+                                }
+
+                            </div>
+
+                            <hr />
+
+                            <h3 className="section-title">
+
+                                Assign New Role
+
+                            </h3>
+
+                            <div className="assign-row">
+
+                                <select
+                                    value={selectedRole}
+                                    onChange={(e)=>
+                                        setSelectedRole(
+                                            e.target.value
+                                        )
+                                    }
+                                >
+
+                                    <option value="">
+                                        Select Role
+                                    </option>
 
                                     {
-                                        group.roles?.length === 0 ?
 
-                                                <p>
-                                                    No roles assigned.
-                                                </p>
+                                        roles.map(role=>(
 
-                                                :
+                                            <option
+                                                key={role.id}
+                                                value={role.id}
+                                            >
 
-                                                group.roles.map(role => (
+                                                {role.name}
 
-                                                        <p
-                                                                key={role.id}
-                                                        >
-                                                            {role.name}
-                                                        </p>
+                                            </option>
 
-                                                ))
+                                        ))
+
                                     }
 
-                                    <hr />
+                                </select>
 
-                                    <h3>
-                                        Assign New Role
-                                    </h3>
+                                <button
+                                    onClick={assignRole}
+                                >
 
-                                    <select
-                                            value={
-                                                selectedRole
-                                            }
-                                            onChange={(e) =>
-                                                    setSelectedRole(
-                                                            e.target.value
-                                                    )
-                                            }
-                                    >
+                                    ➕ Assign Role
 
-                                        <option value="">
-                                            Select Role
-                                        </option>
+                                </button>
 
-                                        {
-                                            roles.map(role => (
+                            </div>
 
-                                                    <option
-                                                            key={role.id}
-                                                            value={role.id}
-                                                    >
-                                                        {role.name}
-                                                    </option>
+                        </>
 
-                                            ))
-                                        }
-
-                                    </select>
-
-                                    {" "}
-
-                                    <button
-                                            onClick={
-                                                assignRole
-                                            }
-                                    >
-                                        Assign Role
-                                    </button>
-                                </>
-
-                        )
                     }
 
                 </div>
 
             </div>
 
+        </div>
+
     );
+
 }
 
 export default ManageGroupRoles;

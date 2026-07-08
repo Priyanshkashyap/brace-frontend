@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/RoleGroups.css";
 
 function RoleGroups() {
 
@@ -17,9 +18,7 @@ function RoleGroups() {
     const loadGroups = async () => {
         try {
 
-            const response = await api.get(
-                "/role-groups"
-            );
+            const response = await api.get("/role-groups");
 
             setGroups(response.data);
 
@@ -27,9 +26,7 @@ function RoleGroups() {
 
             console.error(error);
 
-            alert(
-                "Unable to load role groups."
-            );
+            alert("Unable to load role groups.");
         }
     };
 
@@ -42,12 +39,9 @@ function RoleGroups() {
 
         try {
 
-            await api.post(
-                "/role-groups",
-                {
-                    name: groupName
-                }
-            );
+            await api.post("/role-groups", {
+                name: groupName
+            });
 
             setGroupName("");
 
@@ -57,25 +51,22 @@ function RoleGroups() {
 
             console.error(error);
 
-            alert(
-                "Unable to create role group."
-            );
+            alert("Unable to create role group.");
         }
     };
 
     const deleteGroup = async (id) => {
 
-        const confirmed = window.confirm(
-            "Delete this role group?"
-        );
+        const confirmed =
+            window.confirm(
+                "Delete this role group?"
+            );
 
         if (!confirmed) return;
 
         try {
 
-            await api.delete(
-                `/role-groups/${id}`
-            );
+            await api.delete(`/role-groups/${id}`);
 
             loadGroups();
 
@@ -83,93 +74,130 @@ function RoleGroups() {
 
             console.error(error);
 
-            alert(
-                "Unable to delete role group."
-            );
+            alert("Unable to delete role group.");
         }
     };
 
     return (
-        <div
-            style={{
-                display: "flex"
-            }}
-        >
+
+        <div className="group-page">
 
             <Sidebar />
 
-            <div
-                style={{
-                    flex: 1,
-                    padding: "25px"
-                }}
-            >
+            <div className="group-content">
 
-                <h1>Role Groups</h1>
+                <div className="group-card">
 
-                <hr />
+                    <div className="group-header">
 
-                <input
-                    value={groupName}
-                    onChange={(e) =>
-                        setGroupName(
-                            e.target.value
-                        )
-                    }
-                    placeholder="Role Group Name"
-                />
+                        <div>
 
-                <button
-                    onClick={createGroup}
-                >
-                    Create Group
-                </button>
+                            <h1>
+                                Role Groups
+                            </h1>
 
-                <hr />
-
-                {
-                    groups.map(group => (
-
-                        <div
-                            key={group.id}
-                            style={{
-                                marginBottom: "15px"
-                            }}
-                        >
-
-                            <strong>
-                                {group.name}
-                            </strong>
-
-                            {" "}
-
-                            <button
-                                onClick={() =>
-                                    deleteGroup(
-                                        group.id
-                                    )
-                                }
-                            >
-                                Delete
-                            </button>
-
-                            <button
-                                onClick={() =>
-                                    navigate(
-                                        `/role-groups/${group.id}/manage-roles`
-                                    )
-                                }
-                            >
-                                Manage Roles
-                            </button>
+                            <p>
+                                Organize multiple roles into reusable groups.
+                            </p>
 
                         </div>
-                    ))
-                }
+
+                        <div className="group-count">
+
+                            {groups.length}
+
+                            <span>Total</span>
+
+                        </div>
+
+                    </div>
+
+                    <div className="group-controls">
+
+                        <input
+                            value={groupName}
+                            placeholder="Role Group Name"
+                            onChange={(e)=>
+                                setGroupName(
+                                    e.target.value
+                                )
+                            }
+                        />
+
+                        <button
+                            className="create-btn"
+                            onClick={createGroup}
+                        >
+                            + Create Group
+                        </button>
+
+                    </div>
+
+                    <div className="group-grid">
+
+                        {
+
+                            groups.map(group=>(
+
+                                <div
+                                    key={group.id}
+                                    className="group-box"
+                                >
+
+                                    <div>
+
+                                        <div className="group-icon">
+                                            👥
+                                        </div>
+
+                                        <h3>
+                                            {group.name}
+                                        </h3>
+
+                                        <p>
+                                            Group #{group.id}
+                                        </p>
+
+                                    </div>
+
+                                    <div className="group-actions">
+
+                                        <button
+                                            className="manage-btn"
+                                            onClick={()=>
+                                                navigate(
+                                                    `/role-groups/${group.id}/manage-roles`
+                                                )
+                                            }
+                                        >
+                                            Manage Roles
+                                        </button>
+
+                                        <button
+                                            className="delete-btn"
+                                            onClick={()=>
+                                                deleteGroup(group.id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            ))
+
+                        }
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
+
     );
 }
 

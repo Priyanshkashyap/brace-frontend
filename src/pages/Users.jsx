@@ -1,237 +1,628 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 import Sidebar from "../components/Sidebar";
+import api from "../api/axios";
+import "../styles/Users.css";
 
 function Users() {
 
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => { loadUsers(); }, []);// Run only once, when the component first mounts.
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const [search, setSearch] = useState("");
+
+    useEffect(() => {
+
+        loadUsers();
+
+    }, []);
 
     const loadUsers = async () => {
+
         try {
-            const response = await api.get("/users");
+
+            const response =
+                await api.get("/users");
+
             setUsers(response.data);
-        } 
-        catch (error) {
-
-            console.error(error);
-            alert("Unable to load users.");
-
-        } finally {
-            setLoading(false);
-        }
-      };
-
-    const deactivateUser = async (id) => {
-
-        const confirmDelete = window.confirm("Deactivate this user?" );
-        if (!confirmDelete) return;
-
-        try {
-            await api.delete(`/users/${id}`);
-            loadUsers();
 
         } catch (error) {
 
             console.error(error);
-            alert("Unable to deactivate user.");
+
+            alert("Unable to load users.");
+
+        } finally {
+
+            setLoading(false);
+
         }
+
+    };
+
+    const deactivateUser = async (id) => {
+
+        const confirmDelete =
+            window.confirm(
+                "Deactivate this user?"
+            );
+
+        if (!confirmDelete)
+            return;
+
+        try {
+
+            await api.delete(
+                `/users/${id}`
+            );
+
+            loadUsers();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to deactivate user."
+            );
+
+        }
+
     };
 
     const permanentDelete = async (id) => {
 
-        const confirmDelete = window.confirm(
-            "Permanently delete this user?"
-        );
+        const confirmDelete =
+            window.confirm(
+                "Permanently delete this user?"
+            );
 
-        if (!confirmDelete) return;
+        if (!confirmDelete)
+            return;
 
         try {
 
-            await api.delete(`/users/${id}/permanent`);
+            await api.delete(
+                `/users/${id}/permanent`
+            );
 
             loadUsers();
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(error);
 
-            alert("Unable to permanently delete user.");
+            alert(
+                "Unable to permanently delete user."
+            );
 
         }
 
     };
 
+    const exportUsers = async () => {
+
+        try {
+
+            const response =
+                await api.get(
+                    "/users/export",
+                    {
+                        responseType: "blob"
+                    }
+                );
+
+            const url =
+                window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.setAttribute(
+                "download",
+                "users.xlsx"
+            );
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to export users."
+            );
+
+        }
+
+    };
+
+    const filteredUsers =
+        useMemo(() => {
+
+            return users.filter(user => {
+
+                const value =
+                    search.toLowerCase();
+
+                return (
+
+                    user.username
+                        ?.toLowerCase()
+                        .includes(value)
+
+                    ||
+
+                    user.email
+                        ?.toLowerCase()
+                        .includes(value)
+
+                    ||
+
+                    user.firstName
+                        ?.toLowerCase()
+                        .includes(value)
+
+                    ||
+
+                    user.lastName
+                        ?.toLowerCase()
+                        .includes(value)
+
+                );
+
+            });
+
+        }, [users, search]);
+
+    const totalUsers =
+        users.length;
+
+    const activeUsers =
+        users.filter(
+            u => u.active
+        ).length;
+
+    const inactiveUsers =
+        users.filter(
+            u => !u.active
+        ).length;
+
     return (
 
-        <div
-            style={{
-                display: "flex"
-            }}
-        >
+        <div className="users-page">
 
             <Sidebar />
 
-            <div
-                style={{
-                    flex: 1,
-                    padding: "25px"
-                }}
-            >
+            <div className="users-content">
 
-                <h1>User Management</h1>
+                <div className="users-card">
 
-                <hr />
+                    <div className="users-header">
 
-                {
+                        <div>
 
-                    loading ?
+                            <h1>
+                                User Management
+                            </h1>
 
-                        <h3>Loading...</h3>
+                            <p>
 
-                        :
+                                Manage every user,
+                                role assignment,
+                                profile and permissions
+                                from one dashboard.
 
-                        <table
-                            border="1"
-                            cellPadding="10"
-                            style={{
-                                borderCollapse: "collapse",
-                                width: "100%"
-                            }}
+                            </p>
+
+                        </div>
+
+                        <button
+                            className="export-btn"
+                            onClick={exportUsers}
                         >
 
-                            <thead>
+                            📤 Export Users
 
-                            <tr>
+                        </button>
 
-                                <th>ID</th>
+                    </div>
 
-                                <th>Username</th>
+                    <div className="stats-grid">
 
-                                <th>Email</th>
+                        <div className="stat-card">
 
-                                <th>First Name</th>
+                            <div>
 
-                                <th>Last Name</th>
+                                <h3>
+                                    Total Users
+                                </h3>
 
-                                <th>Phone</th>
+                                <h2>
 
-                                <th>Status</th>
+                                    {totalUsers}
 
-                                <th>Theme</th>
+                                </h2>
 
-                                <th>Actions</th>
+                            </div>
 
-                            </tr>
+                            <div
+                                className="stat-icon total"
+                            >
 
-                            </thead>
+                                👥
 
-                            <tbody>
+                            </div>
 
-                            {
+                        </div>
 
-                                users.map((user) => (
+                        <div className="stat-card">
 
-                                    <tr key={user.id}>
+                            <div>
 
-                                        <td>{user.id}</td>
+                                <h3>
+                                    Active Users
+                                </h3>
 
-                                        <td>{user.username}</td>
+                                <h2>
 
-                                        <td>{user.email}</td>
+                                    {activeUsers}
 
-                                        <td>{user.firstName}</td>
+                                </h2>
 
-                                        <td>{user.lastName}</td>
+                            </div>
 
-                                        <td>{user.phoneNumber}</td>
+                            <div
+                                className="stat-icon active"
+                            >
 
-                                        <td>
+                                ✅
 
-                                            {
+                            </div>
 
-                                                user.active ?
+                        </div>
 
-                                                    "Active"
+                        <div className="stat-card">
 
-                                                    :
+                            <div>
 
-                                                    "Inactive"
+                                <h3>
+                                    Inactive Users
+                                </h3>
 
-                                            }
+                                <h2>
 
-                                        </td>
+                                    {inactiveUsers}
 
-                                        <td>
+                                </h2>
 
-                                            {user.profileTheme}
+                            </div>
 
-                                        </td>
+                            <div
+                                className="stat-icon inactive"
+                            >
 
-                                        <td>
+                                🚫
 
-                                            <button
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/users/${user.id}`
-                                                    )
-                                                }
-                                            >
-                                                View
-                                            </button>
+                            </div>
 
-                                            {" "}
+                        </div>
 
-                                            <button
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/users/edit/${user.id}`
-                                                    )
-                                                }
-                                            >
-                                                Edit
-                                            </button>
+                    </div>
 
-                                            {" "}
+                    <div className="toolbar">
 
-                                            <button
-                                                onClick={() =>
-                                                    deactivateUser(user.id)
-                                                }
-                                            >
-                                                Deactivate
-                                            </button>
+                        <div
+                            className="search-box"
+                        >
 
-                                            {" "}
+                            <input
 
-                                            <button
-                                                onClick={() =>
-                                                    permanentDelete(user.id)
-                                                }
-                                            >
-                                                Permanent Delete
-                                            </button>
-                                                <button
-                                                 onClick={() => navigate( `/users/${user.id}/manage-roles`)}>
-                                             Manage Roles
-                                            </button>
-                                        </td>
+                                placeholder="Search users..."
 
-                                    </tr>
+                                value={search}
 
-                                ))
+                                onChange={(e)=>
+
+                                    setSearch(
+                                        e.target.value
+                                    )
+
+                                }
+
+                            />
+
+                        </div>
+
+                        <button
+
+                            className="create-btn"
+
+                            onClick={()=>
+
+                                navigate(
+                                    "/users/create"
+                                )
 
                             }
 
-                            </tbody>
+                        >
 
-                        </table>
+                            ➕ Create User
 
-                }
+                        </button>
+
+                    </div>
+
+                    {
+
+                        loading ?
+
+                            <div
+                                className="loading"
+                            >
+
+                                Loading Users...
+
+                            </div>
+
+                        :
+
+                            <div
+                                className="table-wrapper"
+                            >
+
+                                <table
+                                    className="users-table"
+                                >
+
+                                    <thead>
+
+                                    <tr>
+
+                                        <th>User</th>
+
+                                        <th>Status</th>
+
+                                        <th>Theme</th>
+
+                                        <th>Phone</th>
+
+                                        <th>Actions</th>
+
+                                    </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                    {
+
+                                        filteredUsers.map(user => (
+
+                                            <tr
+                                                key={user.id}
+                                            >
+
+                                                <td>
+
+                                                    <div
+                                                        className="user-cell"
+                                                    >
+
+                                                        <div
+                                                            className="avatar"
+                                                        >
+
+                                                            {
+
+                                                                (
+                                                                    user.firstName ||
+                                                                    user.username
+                                                                )[0]
+                                                                    .toUpperCase()
+
+                                                            }
+
+                                                        </div>
+
+                                                        <div
+                                                            className="user-info"
+                                                        >
+
+                                                            <h4>
+
+                                                                {
+
+                                                                    user.firstName
+
+                                                                        ?
+
+                                                                        `${user.firstName} ${user.lastName}`
+
+                                                                        :
+
+                                                                        user.username
+
+                                                                }
+
+                                                            </h4>
+
+                                                            <p>
+
+                                                                {
+
+                                                                    user.email
+
+                                                                }
+
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </td>
+
+                                                <td>
+
+                                                    <span
+
+                                                        className={
+
+                                                            user.active
+
+                                                                ?
+
+                                                                "status active"
+
+                                                                :
+
+                                                                "status inactive"
+
+                                                        }
+
+                                                    >
+
+                                                        {
+
+                                                            user.active
+
+                                                                ?
+
+                                                                "Active"
+
+                                                                :
+
+                                                                "Inactive"
+
+                                                        }
+
+                                                    </span>
+
+                                                </td>
+
+                                                <td>
+
+                                                    <span
+
+                                                        className={`theme ${user.profileTheme.toLowerCase()}`}
+
+                                                    >
+
+                                                        {user.profileTheme}
+
+                                                    </span>
+
+                                                </td>
+
+                                                <td>
+
+                                                    {
+
+                                                        user.phoneNumber ||
+
+                                                        "-"
+
+                                                    }
+
+                                                </td>
+
+                                                <td>
+
+                                                    <div
+                                                        className="actions"
+                                                    >
+                                                                                                            <button
+                                                            className="view-btn"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/users/${user.id}`
+                                                                )
+                                                            }
+                                                        >
+                                                            View
+                                                        </button>
+
+                                                        <button
+                                                            className="edit-btn"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/users/edit/${user.id}`
+                                                                )
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </button>
+
+                                                        <button
+                                                            className="role-btn"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/users/${user.id}/manage-roles`
+                                                                )
+                                                            }
+                                                        >
+                                                            Roles
+                                                        </button>
+
+                                                        <button
+                                                            className="disable-btn"
+                                                            onClick={() =>
+                                                                deactivateUser(
+                                                                    user.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Disable
+                                                        </button>
+
+                                                        <button
+                                                            className="delete-btn"
+                                                            onClick={() =>
+                                                                permanentDelete(
+                                                                    user.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </button>
+
+                                                    </div>
+
+                                                </td>
+
+                                            </tr>
+
+                                        ))
+
+                                    }
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                    }
+
+                </div>
 
             </div>
 

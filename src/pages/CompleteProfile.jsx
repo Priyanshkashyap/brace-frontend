@@ -1,174 +1,199 @@
-import { useState }
-from "react";
-
-import { useNavigate }
-from "react-router-dom";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import "../styles/CompleteProfile.css";
 
 function CompleteProfile() {
 
-    const navigate =
-        useNavigate();
+    const navigate = useNavigate();
 
     const userId =
-        localStorage.getItem(
-            "userId"
-        );
+        localStorage.getItem("userId");
 
-    const [
-        firstName,
-        setFirstName
-    ] = useState("");
+    const [firstName,setFirstName] =
+        useState("");
 
-    const [
-        lastName,
-        setLastName
-    ] = useState("");
+    const [lastName,setLastName] =
+        useState("");
 
-    const [
-        phoneNumber,
-        setPhoneNumber
-    ] = useState("");
+    const [phoneNumber,setPhoneNumber] =
+        useState("");
 
-    const [
-        secretQuestion,
-        setSecretQuestion
-    ] = useState("");
+    const [secretQuestion,setSecretQuestion] =
+        useState("");
 
-    const [
-        secretAnswer,
-        setSecretAnswer
-    ] = useState("");
+    const [secretAnswer,setSecretAnswer] =
+        useState("");
 
-    const [
-        newPassword,
-        setNewPassword
-    ] = useState("");
+    const [newPassword,setNewPassword] =
+        useState("");
 
-    const handleSubmit =
-        async () => {
+    const handleSubmit = async () => {
 
-            try {
+        try {
 
-                await api.put(
-                    `/users/${userId}/complete-profile`,
-                    {
-                        firstName,
-                        lastName,
-                        phoneNumber,
-                        secretQuestion,
-                        secretAnswer,
-                        newPassword
-                    }
-                );
+            await api.put(
 
-                localStorage.setItem(
-                    "firstLogin",
-                    "false"
-                );
+                `/users/${userId}/complete-profile`,
 
-                navigate(
-                    "/dashboard"
-                );
+                {
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    secretQuestion,
+                    secretAnswer,
+                    newPassword
+                }
 
-            } catch (error) {
+            );
 
-                alert(
-                    "Profile update failed"
-                );
-            }
-        };
+            localStorage.setItem(
+                "firstLogin",
+                "false"
+            );
+
+            navigate("/dashboard");
+
+        }
+
+        catch(error){
+
+            alert("Profile update failed");
+
+        }
+
+    };
 
     return (
 
-        <div>
+        <div className="complete-page">
 
-            <h1>
-                Complete Profile
-            </h1>
+            <div className="complete-card">
 
-            <input
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) =>
-                    setFirstName(
-                        e.target.value
-                    )
-                }
-            />
+                <h1 className="complete-title">
 
-            <br /><br />
+                    Complete Profile
 
-            <input
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) =>
-                    setLastName(
-                        e.target.value
-                    )
-                }
-            />
+                </h1>
 
-            <br /><br />
+                <p className="complete-subtitle">
 
-            <input
-                placeholder="Phone Number"
-                value={phoneNumber}
-                onChange={(e) =>
-                    setPhoneNumber(
-                        e.target.value
-                    )
-                }
-            />
+                    Finish setting up your account before continuing.
 
-            <br /><br />
+                </p>
 
-            <input
-                placeholder="Secret Question"
-                value={secretQuestion}
-                onChange={(e) =>
-                    setSecretQuestion(
-                        e.target.value
-                    )
-                }
-            />
+                <div className="form-group">
 
-            <br /><br />
+                    <label>
+                        First Name
+                    </label>
 
-            <input
-                placeholder="Secret Answer"
-                value={secretAnswer}
-                onChange={(e) =>
-                    setSecretAnswer(
-                        e.target.value
-                    )
-                }
-            />
+                    <input
+                        className="form-input"
+                        value={firstName}
+                        onChange={(e)=>
+                            setFirstName(e.target.value)
+                        }
+                    />
 
-            <br /><br />
+                </div>
 
-            <input
-                type="password"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={(e) =>
-                    setNewPassword(
-                        e.target.value
-                    )
-                }
-            />
+                <div className="form-group">
 
-            <br /><br />
+                    <label>
+                        Last Name
+                    </label>
 
-            <button
-                onClick={handleSubmit}
-            >
-                Save Profile
-            </button>
+                    <input
+                        className="form-input"
+                        value={lastName}
+                        onChange={(e)=>
+                            setLastName(e.target.value)
+                        }
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+                        Phone Number
+                    </label>
+
+                    <input
+                        className="form-input"
+                        value={phoneNumber}
+                        onChange={(e)=>
+                            setPhoneNumber(e.target.value)
+                        }
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+                        Secret Question
+                    </label>
+
+                    <input
+                        className="form-input"
+                        value={secretQuestion}
+                        onChange={(e)=>
+                            setSecretQuestion(e.target.value)
+                        }
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+                        Secret Answer
+                    </label>
+
+                    <input
+                        className="form-input"
+                        value={secretAnswer}
+                        onChange={(e)=>
+                            setSecretAnswer(e.target.value)
+                        }
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+                        New Password
+                    </label>
+
+                    <input
+                        className="form-input"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e)=>
+                            setNewPassword(e.target.value)
+                        }
+                    />
+
+                </div>
+
+                <button
+                    className="save-btn"
+                    onClick={handleSubmit}
+                >
+
+                    Save Profile
+
+                </button>
+
+            </div>
 
         </div>
+
     );
+
 }
 
 export default CompleteProfile;

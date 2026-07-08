@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/EditUser.css";
 
 function EditUser() {
 
     const { id } = useParams();
-
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
@@ -26,9 +26,8 @@ function EditUser() {
 
         try {
 
-            const response = await api.get(
-                `/users/${id}`
-            );
+            const response =
+                await api.get(`/users/${id}`);
 
             const user = response.data;
 
@@ -39,17 +38,22 @@ function EditUser() {
             setPhoneNumber(user.phoneNumber || "");
             setActive(user.active);
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(error);
 
             alert("Unable to load user.");
 
-        } finally {
+        }
+
+        finally {
 
             setLoading(false);
 
         }
+
     };
 
     const updateUser = async () => {
@@ -57,7 +61,9 @@ function EditUser() {
         try {
 
             await api.put(
+
                 `/users/${id}`,
+
                 {
                     username,
                     email,
@@ -66,144 +72,259 @@ function EditUser() {
                     phoneNumber,
                     active
                 }
+
             );
 
             alert("User updated successfully");
 
             navigate("/users");
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(error);
 
             alert("Unable to update user.");
+
         }
+
     };
 
     if (loading) {
-        return <h2>Loading...</h2>;
+
+        return (
+
+            <div className="edit-loading">
+
+                Loading User...
+
+            </div>
+
+        );
+
     }
 
     return (
 
-        <div style={{ display: "flex" }}>
+        <div className="edit-page">
 
             <Sidebar />
 
-            <div
-                style={{
-                    padding: "25px",
-                    flex: 1
-                }}
-            >
+            <div className="edit-content">
 
-                <h1>Edit User</h1>
+                <div className="edit-card">
 
-                <hr />
+                    <div className="edit-header">
 
-                <div>
+                        <div>
 
-                    <label>Username</label>
+                            <h1>
 
-                    <br />
+                                Edit User
 
-                    <input
-                        value={username}
-                        onChange={(e) =>
-                            setUsername(
-                                e.target.value
-                            )
-                        }
-                    />
+                            </h1>
 
-                    <br /><br />
+                            <p>
 
-                    <label>Email</label>
+                                Update user profile information.
 
-                    <br />
+                            </p>
 
-                    <input
-                        value={email}
-                        onChange={(e) =>
-                            setEmail(
-                                e.target.value
-                            )
-                        }
-                    />
+                        </div>
 
-                    <br /><br />
+                        <div className="profile-avatar">
 
-                    <label>First Name</label>
+                            {
 
-                    <br />
+                                (
+                                    firstName ||
+                                    username
+                                )[0].toUpperCase()
 
-                    <input
-                        value={firstName}
-                        onChange={(e) =>
-                            setFirstName(
-                                e.target.value
-                            )
-                        }
-                    />
+                            }
 
-                    <br /><br />
+                        </div>
 
-                    <label>Last Name</label>
+                    </div>
 
-                    <br />
+                    <div className="form-grid">
 
-                    <input
-                        value={lastName}
-                        onChange={(e) =>
-                            setLastName(
-                                e.target.value
-                            )
-                        }
-                    />
+                        <div className="input-group">
 
-                    <br /><br />
+                            <label>
 
-                    <label>Phone Number</label>
+                                Username
 
-                    <br />
+                            </label>
 
-                    <input
-                        value={phoneNumber}
-                        onChange={(e) =>
-                            setPhoneNumber(
-                                e.target.value
-                            )
-                        }
-                    />
+                            <input
+                                value={username}
+                                onChange={(e)=>
+                                    setUsername(
+                                        e.target.value
+                                    )
+                                }
+                            />
 
-                    <br /><br />
+                        </div>
 
-                    <label>Active</label>
+                        <div className="input-group">
 
-                    <input
-                        type="checkbox"
-                        checked={active}
-                        onChange={(e) =>
-                            setActive(
-                                e.target.checked
-                            )
-                        }
-                    />
+                            <label>
 
-                    <br /><br />
+                                Email
 
-                    <button
-                        onClick={updateUser}
-                    >
-                        Save Changes
-                    </button>
+                            </label>
+
+                            <input
+                                value={email}
+                                onChange={(e)=>
+                                    setEmail(
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                        </div>
+
+                        <div className="input-group">
+
+                            <label>
+
+                                First Name
+
+                            </label>
+
+                            <input
+                                value={firstName}
+                                onChange={(e)=>
+                                    setFirstName(
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                        </div>
+
+                        <div className="input-group">
+
+                            <label>
+
+                                Last Name
+
+                            </label>
+
+                            <input
+                                value={lastName}
+                                onChange={(e)=>
+                                    setLastName(
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                        </div>
+
+                        <div className="input-group">
+
+                            <label>
+
+                                Phone Number
+
+                            </label>
+
+                            <input
+                                value={phoneNumber}
+                                onChange={(e)=>
+                                    setPhoneNumber(
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                        </div>
+
+                        <div className="input-group">
+
+                            <label>
+
+                                Account Status
+
+                            </label>
+
+                            <div className="switch-row">
+
+                                <input
+
+                                    type="checkbox"
+
+                                    checked={active}
+
+                                    onChange={(e)=>
+
+                                        setActive(
+                                            e.target.checked
+                                        )
+
+                                    }
+
+                                />
+
+                                <span>
+
+                                    {
+
+                                        active ?
+
+                                        "Active"
+
+                                        :
+
+                                        "Inactive"
+
+                                    }
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div className="button-row">
+
+                        <button
+                            className="cancel-btn"
+                            onClick={()=>
+                                navigate("/users")
+                            }
+                        >
+
+                            Cancel
+
+                        </button>
+
+                        <button
+                            className="save-btn"
+                            onClick={updateUser}
+                        >
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
 
                 </div>
 
             </div>
 
         </div>
+
     );
+
 }
 
 export default EditUser;

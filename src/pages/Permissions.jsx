@@ -1,110 +1,148 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/Permissions.css";
 
 function Permissions() {
 
-    const [permissions, setPermissions] =
-        useState([]);
-
-    const [permissionName, setPermissionName] =
-        useState("");
+    const [permissions, setPermissions] = useState([]);
+    const [permissionName, setPermissionName] = useState("");
 
     useEffect(() => {
         loadPermissions();
     }, []);
 
     const loadPermissions = async () => {
-
-        const response =
-            await api.get("/permissions");
-
-        setPermissions(response.data);
+        try {
+            const response = await api.get("/permissions");
+            setPermissions(response.data);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const createPermission = async () => {
 
-        await api.post(
-            "/permissions",
-            {
-                name: permissionName
-            }
-        );
+        if (!permissionName.trim()) return;
+
+        await api.post("/permissions", {
+            name: permissionName
+        });
 
         setPermissionName("");
-
         loadPermissions();
     };
 
-    const deletePermission = async (
-            id
-    ) => {
+    const deletePermission = async (id) => {
 
-        await api.delete(
-            `/permissions/${id}`
-        );
+        if (!window.confirm("Delete this permission?"))
+            return;
+
+        await api.delete(`/permissions/${id}`);
 
         loadPermissions();
     };
 
     return (
 
-        <div style={{
-            display: "flex"
-        }}>
+        <div className="permission-page">
 
             <Sidebar />
 
-            <div style={{
-                flex: 1,
-                padding: "20px"
-            }}>
+            <div className="permission-content">
 
-                <h1>Permissions</h1>
+                <div className="permission-card">
 
-                <input
-                    value={permissionName}
-                    onChange={(e) =>
-                        setPermissionName(
-                            e.target.value
-                        )
-                    }
-                    placeholder="Permission Name"
-                />
+                    <div className="permission-header">
 
-                <button
-                    onClick={
-                        createPermission
-                    }
-                >
-                    Create Permission
-                </button>
+                        <div>
 
-                <hr />
+                            <h1>
+                                Permissions
+                            </h1>
 
-                {
-                    permissions.map(permission => (
-
-                        <div
-                            key={permission.id}
-                        >
-
-                            {permission.name}
-
-                            <button
-                                onClick={() =>
-                                    deletePermission(
-                                        permission.id
-                                    )
-                                }
-                            >
-                                Delete
-                            </button>
+                            <p>
+                                Create, manage and organize application permissions.
+                            </p>
 
                         </div>
 
-                    ))
-                }
+                        <div className="permission-count">
+
+                            {permissions.length}
+
+                            <span>Total</span>
+
+                        </div>
+
+                    </div>
+
+                    <div className="permission-controls">
+
+                        <input
+                            value={permissionName}
+                            placeholder="Permission Name"
+                            onChange={(e)=>
+                                setPermissionName(
+                                    e.target.value
+                                )
+                            }
+                        />
+
+                        <button
+                            className="create-btn"
+                            onClick={createPermission}
+                        >
+                            + Create Permission
+                        </button>
+
+                    </div>
+
+                    <div className="permission-grid">
+
+                        {
+
+                            permissions.map(permission=>(
+
+                                <div
+                                    key={permission.id}
+                                    className="permission-box"
+                                >
+
+                                    <div>
+
+                                        <div className="permission-icon">
+                                            🔐
+                                        </div>
+
+                                        <h3>
+                                            {permission.name}
+                                        </h3>
+
+                                        <p>
+                                            Permission #{permission.id}
+                                        </p>
+
+                                    </div>
+
+                                    <button
+                                        className="delete-btn"
+                                        onClick={()=>
+                                            deletePermission(permission.id)
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+
+                                </div>
+
+                            ))
+
+                        }
+
+                    </div>
+
+                </div>
 
             </div>
 

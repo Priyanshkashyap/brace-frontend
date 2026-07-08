@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/Roles.css";
 
 function Roles() {
 
-    const [roles, setRoles] =
-            useState([]);
-
-    const [roleName, setRoleName] =
-            useState("");
+    const [roles, setRoles] = useState([]);
+    const [roleName, setRoleName] = useState("");
 
     useEffect(() => {
         loadRoles();
@@ -16,103 +14,198 @@ function Roles() {
 
     const loadRoles = async () => {
 
-        const response =
+        try {
+
+            const response =
                 await api.get("/roles");
 
-        setRoles(response.data);
+            setRoles(response.data);
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Unable to load roles.");
+
+        }
+
     };
 
     const createRole = async () => {
 
-        await api.post(
+        if (!roleName.trim()) {
+
+            alert("Enter role name");
+
+            return;
+
+        }
+
+        try {
+
+            await api.post(
                 "/roles",
                 {
                     name: roleName
                 }
-        );
+            );
 
-        setRoleName("");
+            setRoleName("");
 
-        loadRoles();
+            loadRoles();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Unable to create role.");
+
+        }
+
     };
 
-    const deleteRole = async (
-            id
-    ) => {
+    const deleteRole = async (id) => {
 
-        await api.delete(
+        const confirmed =
+            window.confirm(
+                "Delete this role?"
+            );
+
+        if (!confirmed) return;
+
+        try {
+
+            await api.delete(
                 `/roles/${id}`
-        );
+            );
 
-        loadRoles();
+            loadRoles();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Unable to delete role.");
+
+        }
+
     };
 
     return (
 
-            <div style={{
-                display: "flex"
-            }}>
+        <div className="role-page">
 
-                <Sidebar />
+            <Sidebar />
 
-                <div style={{
-                    flex: 1,
-                    padding: "20px"
-                }}>
+            <div className="role-content">
 
-                    <h1>
-                        Roles
-                    </h1>
+                <div className="role-card">
 
-                    <input
+                    <div className="role-header">
+
+                        <div>
+
+                            <h1>
+                                Roles
+                            </h1>
+
+                            <p>
+                                Create and manage application roles.
+                            </p>
+
+                        </div>
+
+                        <div className="role-count">
+
+                            {roles.length}
+
+                            <span>Total</span>
+
+                        </div>
+
+                    </div>
+
+                    <div className="role-controls">
+
+                        <input
                             value={roleName}
-                            onChange={(e)=>
-                                    setRoleName(
-                                            e.target.value
-                                    )
-                            }
                             placeholder="Role Name"
-                    />
-
-                    <button
-                            onClick={
-                                createRole
+                            onChange={(e)=>
+                                setRoleName(
+                                    e.target.value
+                                )
                             }
-                    >
-                        Create Role
-                    </button>
+                        />
 
-                    <hr/>
+                        <button
+                            className="create-btn"
+                            onClick={createRole}
+                        >
+                            + Create Role
+                        </button>
 
-                    {
-                        roles.map(role => (
+                    </div>
+
+                    <div className="role-grid">
+
+                        {
+
+                            roles.map(role=>(
 
                                 <div
-                                        key={role.id}
+                                    key={role.id}
+                                    className="role-box"
                                 >
 
-                                    {role.name}
+                                    <div>
+
+                                        <div className="role-icon">
+
+                                            🛡️
+
+                                        </div>
+
+                                        <h3>
+
+                                            {role.name}
+
+                                        </h3>
+
+                                        <p>
+
+                                            Role #{role.id}
+
+                                        </p>
+
+                                    </div>
 
                                     <button
-                                            onClick={() =>
-                                                    deleteRole(
-                                                            role.id
-                                                    )
-                                            }
+                                        className="delete-btn"
+                                        onClick={()=>
+                                            deleteRole(role.id)
+                                        }
                                     >
+
                                         Delete
+
                                     </button>
 
                                 </div>
 
-                        ))
-                    }
+                            ))
+
+                        }
+
+                    </div>
 
                 </div>
 
             </div>
 
+        </div>
+
     );
+
 }
 
 export default Roles;

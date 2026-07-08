@@ -1,0 +1,26 @@
+.theme-select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    transition: 0.25s;
+}
+
+.theme-select:hover {
+    border-color: #38bdf8;
+}
+
+.theme-select:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+.theme-select option {
+    background: #1e293b;
+    color: white;
+}

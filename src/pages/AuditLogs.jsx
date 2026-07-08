@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/AuditLogs.css";
 
 function AuditLogs() {
 
@@ -26,16 +27,14 @@ function AuditLogs() {
         } catch (error) {
 
             console.error(error);
-
-            alert(
-                "Unable to load audit logs."
-            );
+            alert("Unable to load audit logs.");
 
         } finally {
 
             setLoading(false);
 
         }
+
     };
 
     const filterByUser = async () => {
@@ -57,11 +56,10 @@ function AuditLogs() {
         } catch (error) {
 
             console.error(error);
+            alert("Unable to filter logs.");
 
-            alert(
-                "Unable to filter logs."
-            );
         }
+
     };
 
     const filterByAction = async () => {
@@ -83,11 +81,10 @@ function AuditLogs() {
         } catch (error) {
 
             console.error(error);
+            alert("Unable to filter logs.");
 
-            alert(
-                "Unable to filter logs."
-            );
         }
+
     };
 
     return (
@@ -100,144 +97,161 @@ function AuditLogs() {
 
             <Sidebar />
 
-            <div
-                style={{
-                    flex: 1,
-                    padding: "25px"
-                }}
-            >
+            <div className="audit-page">
 
-                <h1>Audit Logs</h1>
+                <div className="audit-card">
 
-                <hr />
+                    <h1 className="audit-title">
+                        Audit Logs
+                    </h1>
 
-                <div>
+                    <p className="audit-subtitle">
+                        Monitor every activity performed inside your RBAC system.
+                    </p>
 
-                    <input
-                        placeholder="Username"
-                        value={usernameFilter}
-                        onChange={(e) =>
-                            setUsernameFilter(
-                                e.target.value
-                            )
-                        }
-                    />
+                    <div className="filter-bar">
 
-                    <button
-                        onClick={filterByUser}
-                    >
-                        Filter User
-                    </button>
+                        <input
+                            className="filter-input"
+                            placeholder="Username"
+                            value={usernameFilter}
+                            onChange={(e) =>
+                                setUsernameFilter(e.target.value)
+                            }
+                        />
 
-                    {"  "}
+                        <button
+                            className="audit-button user-btn"
+                            onClick={filterByUser}
+                        >
+                            Filter User
+                        </button>
 
-                    <input
-                        placeholder="Action"
-                        value={actionFilter}
-                        onChange={(e) =>
-                            setActionFilter(
-                                e.target.value
-                            )
-                        }
-                    />
+                        <input
+                            className="filter-input"
+                            placeholder="Action"
+                            value={actionFilter}
+                            onChange={(e) =>
+                                setActionFilter(e.target.value)
+                            }
+                        />
 
-                    <button
-                        onClick={filterByAction}
-                    >
-                        Filter Action
-                    </button>
+                        <button
+                            className="audit-button action-btn"
+                            onClick={filterByAction}
+                        >
+                            Filter Action
+                        </button>
 
-                    {"  "}
+                        <button
+                            className="audit-button clear-btn"
+                            onClick={loadLogs}
+                        >
+                            Clear Filters
+                        </button>
 
-                    <button
-                        onClick={loadLogs}
-                    >
-                        Clear Filters
-                    </button>
+                    </div>
+
+                    {
+
+                        loading ?
+
+                            <h2 className="loading">
+                                Loading...
+                            </h2>
+
+                            :
+
+                            <table className="audit-table">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+
+                                    <th>Action</th>
+
+                                    <th>User</th>
+
+                                    <th>Timestamp</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                {
+
+                                    logs.map(log => (
+
+                                        <tr key={log.id}>
+
+                                            <td>
+                                                {log.id}
+                                            </td>
+
+                                            <td>
+
+                                                <span className="action-badge">
+
+                                                    {log.action}
+
+                                                </span>
+
+                                            </td>
+
+                                            <td>
+
+                                                <div className="user-badge">
+
+                                                    <div className="user-circle">
+
+                                                        {log.username
+                                                            ? log.username[0].toUpperCase()
+                                                            : "U"}
+
+                                                    </div>
+
+                                                    {log.username}
+
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+
+                                                <span className="time-badge">
+
+                                                    {new Date(
+                                                        log.timestamp
+                                                    ).toLocaleString()}
+
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))
+
+                                }
+
+                                </tbody>
+
+                            </table>
+
+                    }
 
                 </div>
-
-                <br />
-
-                {
-
-                    loading ?
-
-                        <h3>
-                            Loading...
-                        </h3>
-
-                        :
-
-                        <table
-                            border="1"
-                            cellPadding="10"
-                            style={{
-                                width: "100%",
-                                borderCollapse:
-                                    "collapse"
-                            }}
-                        >
-
-                            <thead>
-
-                            <tr>
-
-                                <th>ID</th>
-
-                                <th>Action</th>
-
-                                <th>Username</th>
-
-                                <th>Timestamp</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                            {
-
-                                logs.map(log => (
-
-                                    <tr
-                                        key={log.id}
-                                    >
-
-                                        <td>
-                                            {log.id}
-                                        </td>
-
-                                        <td>
-                                            {log.action}
-                                        </td>
-
-                                        <td>
-                                            {log.username}
-                                        </td>
-
-                                        <td>
-                                            {log.timestamp}
-                                        </td>
-
-                                    </tr>
-
-                                ))
-
-                            }
-
-                            </tbody>
-
-                        </table>
-
-                }
 
             </div>
 
         </div>
 
     );
+
 }
 
 export default AuditLogs;

@@ -1,0 +1,233 @@
+.edit-page{
+    display:flex;
+    min-height:100vh;
+    background:#eef3fb;
+    font-family:Inter,sans-serif;
+}
+
+.edit-content{
+    flex:1;
+    padding:40px;
+}
+
+.edit-card{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:40px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.08);
+
+}
+
+.edit-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:40px;
+
+}
+
+.edit-header h1{
+
+    margin:0;
+
+    font-size:34px;
+
+    color:#1f2937;
+
+}
+
+.edit-header p{
+
+    color:#64748b;
+
+    margin-top:8px;
+
+}
+
+.profile-avatar{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color:white;
+
+    font-size:36px;
+
+    font-weight:bold;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+
+}
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.input-group label{
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+.input-group input{
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border:1px solid #d7dce4;
+
+    font-size:15px;
+
+    transition:.25s;
+
+}
+
+.input-group input:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 4px rgba(37,99,235,.15);
+
+}
+
+.switch-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-top:12px;
+
+    font-weight:600;
+
+}
+
+.button-row{
+
+    margin-top:45px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:20px;
+
+}
+
+.cancel-btn{
+
+    padding:14px 28px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#9ca3af;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.cancel-btn:hover{
+
+    background:#6b7280;
+
+}
+
+.save-btn{
+
+    padding:14px 28px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#10b981;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.save-btn:hover{
+
+    background:#059669;
+
+    transform:translateY(-2px);
+
+}
+
+.edit-loading{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100vh;
+
+    font-size:28px;
+
+    color:#64748b;
+
+}

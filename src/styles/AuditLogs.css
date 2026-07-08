@@ -1,0 +1,146 @@
+.audit-page {
+    flex: 1;
+    padding: 35px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+.audit-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.audit-title {
+    margin: 0;
+    font-size: 34px;
+    color: #1e293b;
+}
+
+.audit-subtitle {
+    color: #64748b;
+    margin-top: 8px;
+    margin-bottom: 25px;
+}
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-input {
+    width: 220px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.filter-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 8px rgba(37,99,235,0.2);
+}
+
+.audit-button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.audit-button:hover {
+    transform: translateY(-2px);
+}
+
+.user-btn {
+    background: #2563eb;
+}
+
+.action-btn {
+    background: #0ea5e9;
+}
+
+.clear-btn {
+    background: #ef4444;
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.audit-table thead {
+    background: linear-gradient(90deg,#2563eb,#4f46e5);
+    color: white;
+}
+
+.audit-table th {
+    padding: 16px;
+    text-align: left;
+}
+
+.audit-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.audit-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.audit-table tbody tr:hover {
+    background: #dbeafe;
+    transition: .25s;
+}
+
+.action-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #dbeafe;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.time-badge {
+    background: #f1f5f9;
+    padding: 7px 12px;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.loading {
+    text-align: center;
+    color: #64748b;
+    margin-top: 50px;
+}

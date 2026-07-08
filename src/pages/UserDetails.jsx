@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import api from "../api/axios";
+import "../styles/UserDetails.css";
 
 function UserDetails() {
 
     const { id } = useParams();
-    const [user, setUser] = useState(null); // will contain an object
+
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,19 +19,22 @@ function UserDetails() {
 
         try {
 
-            const response = await api.get(
-                `/users/${id}`
-            );
+            const response =
+                await api.get(`/users/${id}`);
 
             setUser(response.data);
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(error);
 
             alert("Unable to load user.");
 
-        } finally {
+        }
+
+        finally {
 
             setLoading(false);
 
@@ -37,136 +42,201 @@ function UserDetails() {
 
     };
 
+    if (loading) {
+
+        return (
+
+            <div className="user-loading">
+
+                Loading User...
+
+            </div>
+
+        );
+
+    }
+
     return (
 
-        <div style={{ display: "flex" }}>
+        <div className="details-page">
 
             <Sidebar />
 
-            <div
-                style={{
-                    padding: "25px",
-                    flex: 1
-                }}
-            >
-
-                <h1>User Details</h1>
-
-                <hr />
+            <div className="details-content">
 
                 {
 
-                    loading ?
+                    user &&
 
-                        <h3>Loading...</h3>
+                    <div className="details-card">
 
-                        :
+                        <div className="profile-header">
 
-                        user && (
+                            <div className="profile-avatar">
+
+                                {
+
+                                    (
+                                        user.firstName ||
+                                        user.username
+                                    )[0].toUpperCase()
+
+                                }
+
+                            </div>
 
                             <div>
 
-                                <p>
-                                    <strong>ID:</strong>
-                                    {" "}
-                                    {user.id}
-                                </p>
+                                <h1>
+
+                                    {
+
+                                        user.firstName
+
+                                            ?
+
+                                            `${user.firstName} ${user.lastName}`
+
+                                            :
+
+                                            user.username
+
+                                    }
+
+                                </h1>
 
                                 <p>
-                                    <strong>Username:</strong>
-                                    {" "}
-                                    {user.username}
-                                </p>
 
-                                <p>
-                                    <strong>Email:</strong>
-                                    {" "}
                                     {user.email}
+
                                 </p>
 
-                                <p>
-                                    <strong>First Name:</strong>
-                                    {" "}
-                                    {user.firstName}
-                                </p>
+                            </div>
+
+                        </div>
+
+                        <div className="info-grid">
+
+                            <div className="info-box">
+
+                                <h3>Account</h3>
+
+                                <p><strong>ID:</strong> {user.id}</p>
+
+                                <p><strong>Username:</strong> {user.username}</p>
+
+                                <p><strong>Email:</strong> {user.email}</p>
+
+                            </div>
+
+                            <div className="info-box">
+
+                                <h3>Profile</h3>
+
+                                <p><strong>First Name:</strong> {user.firstName || "-"}</p>
+
+                                <p><strong>Last Name:</strong> {user.lastName || "-"}</p>
+
+                                <p><strong>Phone:</strong> {user.phoneNumber || "-"}</p>
+
+                            </div>
+
+                            <div className="info-box">
+
+                                <h3>Preferences</h3>
 
                                 <p>
-                                    <strong>Last Name:</strong>
-                                    {" "}
-                                    {user.lastName}
-                                </p>
 
-                                <p>
-                                    <strong>Phone Number:</strong>
-                                    {" "}
-                                    {user.phoneNumber}
-                                </p>
-
-                                <p>
                                     <strong>Theme:</strong>
-                                    {" "}
-                                    {user.profileTheme}
+
+                                    <span className={`theme-badge ${user.profileTheme.toLowerCase()}`}>
+
+                                        {user.profileTheme}
+
+                                    </span>
+
                                 </p>
 
                                 <p>
+
                                     <strong>Status:</strong>
-                                    {" "}
-                                    {
-                                        user.active
-                                            ? "Active"
-                                            : "Inactive"
-                                    }
+
+                                    <span className={user.active ? "status-badge active" : "status-badge inactive"}>
+
+                                        {
+
+                                            user.active
+
+                                                ?
+
+                                                "Active"
+
+                                                :
+
+                                                "Inactive"
+
+                                        }
+
+                                    </span>
+
                                 </p>
 
                                 <p>
+
                                     <strong>First Login:</strong>
-                                    {" "}
+
                                     {
+
                                         user.firstLogin
-                                            ? "Yes"
-                                            : "No"
+
+                                            ?
+
+                                            " Yes"
+
+                                            :
+
+                                            " No"
+
                                     }
+
                                 </p>
 
-                                <hr />
+                            </div>
 
-                                <h2>Roles</h2>
+                        </div>
+
+                        <div className="bottom-grid">
+
+                            <div className="list-card">
+
+                                <h2>
+
+                                    Assigned Roles
+
+                                </h2>
 
                                 {
 
                                     user.roles?.length === 0 ?
 
-                                        <p>No roles assigned</p>
+                                        <p className="empty">
+
+                                            No roles assigned.
+
+                                        </p>
 
                                         :
 
-                                        user.roles?.map(role => (
+                                        user.roles.map(role=>(
 
-                                            <p key={role.id}>
-                                                {role.name}
-                                            </p>
+                                            <div
+                                                key={role.id}
+                                                className="chip role-chip"
+                                            >
 
-                                        ))
+                                                🛡 {role.name}
 
-                                }
-
-                                <hr />
-
-                                <h2>Role Groups</h2>
-
-                                {
-
-                                    user.roleGroups?.length === 0 ?
-
-                                        <p>No groups assigned</p>
-
-                                        :
-
-                                        user.roleGroups?.map(group => (
-
-                                            <p key={group.id}>
-                                                {group.name}
-                                            </p>
+                                            </div>
 
                                         ))
 
@@ -174,7 +244,46 @@ function UserDetails() {
 
                             </div>
 
-                        )
+                            <div className="list-card">
+
+                                <h2>
+
+                                    Role Groups
+
+                                </h2>
+
+                                {
+
+                                    user.roleGroups?.length === 0 ?
+
+                                        <p className="empty">
+
+                                            No role groups assigned.
+
+                                        </p>
+
+                                        :
+
+                                        user.roleGroups.map(group=>(
+
+                                            <div
+                                                key={group.id}
+                                                className="chip group-chip"
+                                            >
+
+                                                👥 {group.name}
+
+                                            </div>
+
+                                        ))
+
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 }
 
@@ -183,6 +292,7 @@ function UserDetails() {
         </div>
 
     );
+
 }
 
 export default UserDetails;

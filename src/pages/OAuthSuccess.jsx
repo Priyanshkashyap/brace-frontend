@@ -3,34 +3,50 @@ import { useNavigate } from "react-router-dom";
 
 function OAuthSuccess() {
 
-    const navigate =
-            useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
         const params =
-                new URLSearchParams(
-                        window.location.search
-                );
+            new URLSearchParams(
+                window.location.search
+            );
 
         const token =
-                params.get("token");
+            params.get("token");
 
-        if(token){
+        const userId =
+            params.get("userId");
+
+        if (token) {
 
             localStorage.setItem(
-                    "token",
-                    token
+                "token",
+                token
+            );
+
+            localStorage.setItem(
+                "userId",
+                userId
+            );
+
+            localStorage.setItem(
+                "firstLogin",
+                false
             );
 
             navigate(
-                    "/dashboard"
+                "/dashboard"
             );
         }
 
-    }, []);
+    }, [navigate]);
 
-    return <h1>Logging in...</h1>;
+    return (
+        <h1>
+            Logging in...
+        </h1>
+    );
 }
 
 export default OAuthSuccess;
