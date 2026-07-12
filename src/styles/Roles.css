@@ -260,3 +260,129 @@
     transform:translateY(-2px);
 
 }
+/* ========================= */
+/* Edit Role Styling */
+/* ========================= */
+
+.role-actions{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:25px;
+
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn{
+
+    flex:1;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:10px;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    font-size:15px;
+
+}
+
+.edit-btn{
+
+    background:#3b82f6;
+
+}
+
+.edit-btn:hover{
+
+    background:#2563eb;
+
+    transform:translateY(-2px);
+
+}
+
+.save-btn{
+
+    background:#10b981;
+
+}
+
+.save-btn:hover{
+
+    background:#059669;
+
+    transform:translateY(-2px);
+
+}
+
+.cancel-btn{
+
+    background:#6b7280;
+
+}
+
+.cancel-btn:hover{
+
+    background:#4b5563;
+
+    transform:translateY(-2px);
+
+}
+
+.delete-btn{
+
+    flex:1;
+
+    margin-top:25px;
+
+}
+
+.role-actions .delete-btn{
+
+    margin-top:0;
+
+}
+
+.edit-role-input{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:1px solid #d7dce4;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    color:#1f2937;
+
+    transition:.25s;
+
+    box-sizing:border-box;
+
+}
+
+.edit-role-input:focus{
+
+    outline:none;
+
+    border-color:#3b82f6;
+
+    box-shadow:
+        0 0 0 4px rgba(59,130,246,.18);
+
+}

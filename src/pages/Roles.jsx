@@ -8,6 +8,9 @@ function Roles() {
     const [roles, setRoles] = useState([]);
     const [roleName, setRoleName] = useState("");
 
+    const [editingRoleId, setEditingRoleId] = useState(null);
+    const [editingRoleName, setEditingRoleName] = useState("");
+
     useEffect(() => {
         loadRoles();
     }, []);
@@ -59,6 +62,60 @@ function Roles() {
             console.error(error);
 
             alert("Unable to create role.");
+
+        }
+
+    };
+
+    const startEditing = (role) => {
+
+        setEditingRoleId(role.id);
+
+        setEditingRoleName(role.name);
+
+    };
+
+    const cancelEditing = () => {
+
+        setEditingRoleId(null);
+
+        setEditingRoleName("");
+
+    };
+
+    const updateRole = async () => {
+
+        if (!editingRoleName.trim()) {
+
+            alert("Role name cannot be empty.");
+
+            return;
+
+        }
+
+        try {
+
+            await api.put(
+
+                `/roles/${editingRoleId}`,
+
+                {
+                    name: editingRoleName
+                }
+
+            );
+
+            setEditingRoleId(null);
+
+            setEditingRoleName("");
+
+            loadRoles();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Unable to update role.");
 
         }
 
@@ -130,7 +187,7 @@ function Roles() {
                         <input
                             value={roleName}
                             placeholder="Role Name"
-                            onChange={(e)=>
+                            onChange={(e) =>
                                 setRoleName(
                                     e.target.value
                                 )
@@ -150,7 +207,7 @@ function Roles() {
 
                         {
 
-                            roles.map(role=>(
+                            roles.map(role => (
 
                                 <div
                                     key={role.id}
@@ -165,11 +222,33 @@ function Roles() {
 
                                         </div>
 
-                                        <h3>
+                                        {
 
-                                            {role.name}
+                                            editingRoleId === role.id ?
 
-                                        </h3>
+                                                <input
+
+                                                    className="edit-role-input"
+
+                                                    value={editingRoleName}
+
+                                                    onChange={(e) =>
+                                                        setEditingRoleName(
+                                                            e.target.value
+                                                        )
+                                                    }
+
+                                                />
+
+                                            :
+
+                                                <h3>
+
+                                                    {role.name}
+
+                                                </h3>
+
+                                        }
 
                                         <p>
 
@@ -179,16 +258,61 @@ function Roles() {
 
                                     </div>
 
-                                    <button
-                                        className="delete-btn"
-                                        onClick={()=>
-                                            deleteRole(role.id)
-                                        }
-                                    >
+                                    {
 
-                                        Delete
+                                        editingRoleId === role.id ?
 
-                                    </button>
+                                            <div className="role-actions">
+
+                                                <button
+                                                    className="save-btn"
+                                                    onClick={updateRole}
+                                                >
+
+                                                    Save
+
+                                                </button>
+
+                                                <button
+                                                    className="cancel-btn"
+                                                    onClick={cancelEditing}
+                                                >
+
+                                                    Cancel
+
+                                                </button>
+
+                                            </div>
+
+                                        :
+
+                                            <div className="role-actions">
+
+                                                <button
+                                                    className="edit-btn"
+                                                    onClick={() =>
+                                                        startEditing(role)
+                                                    }
+                                                >
+
+                                                    Edit
+
+                                                </button>
+
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() =>
+                                                        deleteRole(role.id)
+                                                    }
+                                                >
+
+                                                    Delete
+
+                                                </button>
+
+                                            </div>
+
+                                    }
 
                                 </div>
 
